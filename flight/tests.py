@@ -76,7 +76,8 @@ class FlightTestCase(APITestCase):
             "date_of_departure": "2022-12-03",
             "etd": "15:27:22"
         }
-        request = self.factory.put('/flight/flights/1/', data, format='json')
+        url = reverse('flight-detail', kwargs={'pk': 1})
+        request = self.factory.put(url, data, format='json')
         force_authenticate(request, user=self.user)
         self.user.is_staff = True
         self.user.save()
