@@ -41,6 +41,8 @@ class FlightTestCase(APITestCase):
     def test_flight_create_as_admin_user(self):
         request = self.factory.post('/flight/flights/')
         force_authenticate(request, user=self.user)
+        self.user.is_staff = True
+        self.user.save()
         response = FlightView.as_view({'post': 'create'})(request)
         self.assertEqual(response.status_code, 201)
 
