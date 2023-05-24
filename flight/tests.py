@@ -5,6 +5,7 @@ from .views import FlightView
 from rest_framework.test import force_authenticate
 from .models import Flight
 from django.urls import reverse
+from rest_framework.authtoken.models import Token
 
 
 # Create your tests here.
@@ -17,6 +18,7 @@ class FlightTestCase(APITestCase):
             email='tarik@gmail.com',
             password='secret123'
         )
+        self.token = Token.objects.get(user=self.user)
         self.flight = Flight.objects.create(
             id=1,
             flight_number="AA100",
@@ -42,8 +44,8 @@ class FlightTestCase(APITestCase):
     
     
     def test_flight_create_as_login_user(self):
-        request = self.factory.post(reverse('flight-list'))
-        force_authenticate(request, user=self.user)
+        request = self.factory.post(reverse('flight-list'), HTTP_AUTHORIZATION='Token ' + self.token.key)
+        # force_authenticate(request, user=self.user)
         response = FlightView.as_view({'post': 'create'})(request)
         self.assertEqual(response.status_code, 403)
     
